@@ -121,7 +121,7 @@ fi
 
 # Instalar las extensions que faltan
 echo "Instalando extensiones"
-sudo apt install php-mbstring php-xml php-bcmath php-zip
+sudo apt install php-mbstring php-xml php-bcmath php-zip -y
 
 
 # Instalar Laravel si no está instalado
