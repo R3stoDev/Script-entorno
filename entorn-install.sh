@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Moverse al directorio home
+cd
+
 # Función para verificar el estado del último comando y mostrar advertencia si falla
 check_status() {
     if [ $? -ne 0 ]; then
