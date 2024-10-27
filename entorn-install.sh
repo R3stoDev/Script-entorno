@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Moverse al directorio home
 cd
 
