@@ -33,6 +33,8 @@ if [ ! -d "dev" ]; then
     check_status "creación de la carpeta dev"
 fi
 
+bash
+
 echo "Moviéndose al directorio 'dev'"
 cd dev
 
@@ -44,6 +46,8 @@ else
     sudo apt install mysql-server -y
     check_status "MySQL"
 fi
+
+bash
 
 # Instalar PHP si no está instalado
 if command -v php > /dev/null 2>&1; then
@@ -61,6 +65,8 @@ echo "Verificando la instalación de PHP"
 php -v
 check_status "verificación de PHP"
 
+bash
+ 
 echo "Verificando la instalación de MySQL"
 mysql --version
 check_status "verificación de MySQL"
@@ -95,6 +101,7 @@ else
     nvm install 20
     check_status "Node.js v20"
 fi
+bash
 
 echo "Verificando la instalación de Node.js y npm..."
 node -v
@@ -110,6 +117,8 @@ else
     npm install -g @angular/cli
     check_status "Angular CLI"
 fi
+
+bash
 
 echo "Verificando la instalación de Angular CLI"
 ng version
@@ -136,6 +145,7 @@ fi
 echo "Instalando extensiones"
 sudo apt install php-mbstring php-xml php-bcmath php-zip -y
 
+bash
 
 # Instalar Laravel si no está instalado
 if command -v laravel > /dev/null 2>&1; then
