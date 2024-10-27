@@ -2,13 +2,11 @@
 
 set -e
 
-# Moverse al directorio home
-cd
-
-# Función para verificar el estado del último comando y mostrar advertencia si falla
+# Función para verificar el estado del último comando
 check_status() {
     if [ $? -ne 0 ]; then
         echo "ADVERTENCIA: Fallo en la instalación o ejecución de $1"
+        exit 1
     fi
 }
 
@@ -17,154 +15,98 @@ echo "Actualizando los paquetes del sistema..."
 sudo apt update && sudo apt upgrade -y
 check_status "actualización del sistema"
 
-# Instalar fish si no está instalado
-if command -v fish > /dev/null 2>&1; then
-    echo "Fish ya está instalado"
-else
-    echo "Instalando fish"
+# Instalar fish
+if ! command -v fish > /dev/null 2>&1; then
+    echo "Instalando fish..."
     sudo apt install fish -y
     check_status "Fish"
 fi
 
-# Creación de carpeta de dev si no existe
-if [ ! -d "dev" ]; then
-    echo "Creando directorio 'dev'"
-    mkdir dev
+# Crear carpeta de dev
+if [ ! -d "$HOME/dev" ]; then
+    echo "Creando directorio 'dev'..."
+    mkdir "$HOME/dev"
     check_status "creación de la carpeta dev"
 fi
 
-bash
+cd "$HOME/dev"
 
-echo "Moviéndose al directorio 'dev'"
-cd dev
-
-# Instalar MySQL si no está instalado
-if command -v mysql > /dev/null 2>&1; then
-    echo "MySQL ya está instalado"
-else
-    echo "Instalando mysql-server"
+# Instalar MySQL
+if ! command -v mysql > /dev/null 2>&1; then
+    echo "Instalando mysql-server..."
     sudo apt install mysql-server -y
     check_status "MySQL"
 fi
 
-bash
-
-# Instalar PHP si no está instalado
-if command -v php > /dev/null 2>&1; then
-    echo "PHP ya está instalado"
-else
-    echo "Instalando php"
-    sudo apt install php -y
+# Instalar PHP
+if ! command -v php > /dev/null 2>&1; then
+    echo "Instalando php..."
+    sudo apt install php php-mysql -y
     check_status "PHP"
-    echo "Instalando php-mysql"
-    sudo apt install php-mysql -y
-    check_status "php-mysql"
 fi
 
-echo "Verificando la instalación de PHP"
+# Verificar PHP
 php -v
 check_status "verificación de PHP"
 
-bash
- 
-echo "Verificando la instalación de MySQL"
-mysql --version
-check_status "verificación de MySQL"
-
-# Instalar curl si no está instalado
+# Instalar curl
 if ! command -v curl > /dev/null 2>&1; then
     echo "Instalando curl..."
     sudo apt install curl -y
     check_status "curl"
 fi
 
-
-# Instalar Node.js y npm si no están instalados
-if command -v node > /dev/null 2>&1; then
-    echo "Node.js ya está instalado"
-else
+# Instalar Node.js y NVM
+if ! command -v node > /dev/null 2>&1; then
     echo "Instalando Node.js..."
-
-    # Instalar NVM (Node Version Manager) si no está instalado
     if [ -z "$NVM_DIR" ]; then
         echo "Instalando NVM..."
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
         check_status "NVM"
-
-        # Recargar el entorno para usar NVM en el mismo script
-        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+        export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     fi
-
-    # Instalar Node.js versión 20
-    echo "Instalando Node.js v20"
     nvm install 20
-    check_status "Node.js v20"
+    check_status "Node.js"
 fi
-bash
 
-echo "Verificando la instalación de Node.js y npm..."
+# Verificar Node.js y npm
 node -v
 check_status "Node.js"
 npm -v
 check_status "npm"
 
-# Instalar Angular CLI si no está instalado
-if command -v ng > /dev/null 2>&1; then
-    echo "Angular CLI ya está instalado"
-else
+# Instalar Angular CLI
+if ! command -v ng > /dev/null 2>&1; then
     echo "Instalando Angular CLI..."
     npm install -g @angular/cli
     check_status "Angular CLI"
 fi
 
-bash
-
-echo "Verificando la instalación de Angular CLI"
-ng version
-check_status "verificación de Angular CLI"
-
-# Instalar Composer si no está instalado
-if command -v composer > /dev/null 2>&1; then
-    echo "Composer ya está instalado"
-else
+# Instalar Composer
+if ! command -v composer > /dev/null 2>&1; then
     echo "Instalando Composer..."
     sudo apt install composer -y
     check_status "Composer"
-
-    # Añadir Composer al PATH en ~/.bashrc
+    
+    # Añadir Composer al PATH
     if ! grep -q 'export PATH="$HOME/.composer/vendor/bin:$PATH"' ~/.bashrc; then
         echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
         echo "Recargando ~/.bashrc para aplicar cambios"
         source ~/.bashrc
-        check_status "actualización del PATH para Composer"
     fi
 fi
 
-# Instalar las extensions que faltan
-echo "Instalando extensiones"
+# Instalar extensiones de PHP
+echo "Instalando extensiones de PHP..."
 sudo apt install php-mbstring php-xml php-bcmath php-zip -y
+check_status "extensiones de PHP"
 
-bash
-
-# Instalar Laravel si no está instalado
-if command -v laravel > /dev/null 2>&1; then
-    echo "Laravel ya está instalado"
-else
-    echo "Instalando Laravel"
+# Instalar Laravel
+if ! command -v laravel > /dev/null 2>&1; then
+    echo "Instalando Laravel..."
     composer global require laravel/installer
     check_status "Laravel"
 fi
-# Añadir Composer y Laravel al PATH en ~/.bashrc
-if ! grep -q 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' ~/.bashrc; then
-    echo 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.bashrc
-    echo "Recargando ~/.bashrc para aplicar cambios"
-    source ~/.bashrc
-    check_status "actualización del PATH para Composer"
-fi
 
-
-
-echo "el script se ha completado"
-
-
+echo "El script se ha completado"
