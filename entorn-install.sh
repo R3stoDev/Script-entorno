@@ -89,12 +89,18 @@ if ! command -v composer > /dev/null 2>&1; then
     sudo apt install composer -y
     check_status "Composer"
     
-    # Añadir Composer al PATH
+    # Añadir Composer al PATH en ~/.bashrc
     if ! grep -q 'export PATH="$HOME/.composer/vendor/bin:$PATH"' ~/.bashrc; then
         echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
-        echo "Recargando ~/.bashrc para aplicar cambios"
-        source ~/.bashrc
     fi
+
+    if ! grep -q 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' ~/.bashrc; then
+        echo 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.bashrc
+    fi
+
+    echo "Recargando ~/.bashrc para aplicar cambios"
+    source ~/.bashrc
+    check_status "actualización del PATH para Composer"
 fi
 
 # Instalar extensiones de PHP
