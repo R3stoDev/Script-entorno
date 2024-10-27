@@ -65,6 +65,14 @@ echo "Verificando la instalación de MySQL"
 mysql --version
 check_status "verificación de MySQL"
 
+# Instalar curl si no está instalado
+if ! command -v curl > /dev/null 2>&1; then
+    echo "Instalando curl..."
+    sudo apt install curl -y
+    check_status "curl"
+fi
+
+
 # Instalar Node.js y npm si no están instalados
 if command -v node > /dev/null 2>&1; then
     echo "Node.js ya está instalado"
