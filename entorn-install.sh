@@ -145,6 +145,15 @@ else
     composer global require laravel/installer
     check_status "Laravel"
 fi
+# Añadir Composer y Laravel al PATH en ~/.bashrc
+if ! grep -q 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' ~/.bashrc; then
+    echo 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.bashrc
+    echo "Recargando ~/.bashrc para aplicar cambios"
+    source ~/.bashrc
+    check_status "actualización del PATH para Composer"
+fi
+
+
 
 echo "el script se ha completado"
 
